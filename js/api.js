@@ -1,6 +1,8 @@
 /* ============================================================
    api.js — the ONLY place that talks to Supabase.
    Every privileged call goes through an admin_* RPC.
+   The Supabase Auth session is attached automatically by
+   supabase-js; the server verifies the caller via auth.uid().
    NEVER read/write tables directly from this client.
    ============================================================ */
 const API = (() => {
@@ -10,8 +12,6 @@ const API = (() => {
 
   const client = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
-  const SESSION_KEY = "panthraa_admin_session";
-
   /* Normalize an error thrown by the supabase-js client. */
   function normalizeError(error) {
     if (!error) return "Unknown error.";
@@ -19,33 +19,33 @@ const API = (() => {
     return String(msg).replace(/^database error:\s*/i, "").trim();
   }
 
-  /* Call an RPC with the admin token attached.
+  /* Server messages that mean "the session is invalid — sign in again". */
+  const AUTH_ERROR_RE = /sign in required|session|token|jwt|expired|invalid login credentials/i;
+
+  /* Call an admin RPC.
      Returns { ok: true, data } or { ok: false, error }.
-     Session-token failures are detected here and force a logout. */
-  async function callRpc(name, args = {}, opts = {}) {
-    const payload = { ...(args || {}) };
-    if (!opts.public) {
-      const session = Auth.getSession();
-      if (!session || !session.token) {
-        Auth.clearSession();
-        return { ok: false, error: "Admin session missing. Please sign in again.", needsLogin: true };
-      }
-      payload.p_admin_token = session.token;
+     Session failures are detected here and force a logout. */
+  async function callRpc(name, args = {}) {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+      Auth.handleAuthFailure();
+      return { ok: false, error: "Sign in required.", needsLogin: true };
     }
 
     let result;
     try {
-      result = await client.rpc(name, payload);
+      result = await client.rpc(name, args || {});
     } catch (e) {
       const error = normalizeError(e);
-      if (/session|token/i.test(error)) Auth.handleAuthFailure();
-      return { ok: false, error, needsLogin: /session|token/i.test(error) };
+      const isAuth = AUTH_ERROR_RE.test(error);
+      if (isAuth) Auth.handleAuthFailure();
+      return { ok: false, error, needsLogin: isAuth };
     }
 
     if (result.error) {
       const error = normalizeError(result.error);
       const code = result.error.code || "";
-      const isAuth = code === "P0001" && /session|token|expired|disabled/i.test(error);
+      const isAuth = code === "P0001" && AUTH_ERROR_RE.test(error);
       if (isAuth) Auth.handleAuthFailure();
       return { ok: false, error, code, needsLogin: isAuth };
     }
@@ -82,5 +82,5 @@ const API = (() => {
     return { ok: false, error: "Could not resolve a storage link for this file." };
   }
 
-  return { client, callRpc, fileLink, fileLinkSmart, SESSION_KEY, normalizeError };
+  return { client, callRpc, fileLink, fileLinkSmart, normalizeError };
 })();
