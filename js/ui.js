@@ -197,19 +197,44 @@ const UI = (() => {
     if (root) root.innerHTML = "";
   }
 
-  /* ---------- confirm dialog ---------- */
-  function confirm({ title = "Are you sure?", message = "", danger = true, okText = "Confirm", cancelText = "Cancel", body = "" }) {
+  /* ---------- confirm dialog ----------
+     danger confirms get an arm delay: the OK button stays
+     disabled while counting down (default 3s) so destructive
+     actions can never be triggered by a slip of the finger.
+     Pass armDelay: 0 to opt out. */
+  function confirm({ title = "Are you sure?", message = "", danger = true, okText = "Confirm", cancelText = "Cancel", body = "", armDelay = 3 }) {
     return new Promise((resolve) => {
+      let armed = false, timer = null;
       const footer = `
         <button class="btn secondary cancel">${escapeHtml(cancelText)}</button>
-        <button class="btn ${danger ? "danger" : ""} ok">${escapeHtml(okText)}</button>`;
+        <button class="btn ${danger ? "danger" : ""} ok"${danger && armDelay > 0 ? " disabled" : ""}>${escapeHtml(okText)}${danger && armDelay > 0 ? ` (${armDelay}s)` : ""}</button>`;
       const m = modal({
         title, size: "sm",
         body: `<div class="confirm-body">${message ? `<div class="warn-box">${message}</div>` : ""}${body || ""}</div>`,
         footer,
+        onClose: () => { if (timer) clearInterval(timer); },
       });
       m.foot.querySelector(".cancel").addEventListener("click", () => { m.close(); resolve(false); });
-      m.foot.querySelector(".ok").addEventListener("click", () => { m.close(); resolve(true); });
+
+      const okBtn = m.foot.querySelector(".ok");
+      if (danger && armDelay > 0) {
+        let left = armDelay;
+        timer = setInterval(() => {
+          left -= 1;
+          if (left <= 0) {
+            clearInterval(timer); timer = null;
+            okBtn.disabled = false;
+            okBtn.innerHTML = escapeHtml(okText);
+            armed = true;
+            okBtn.focus();
+          } else {
+            okBtn.innerHTML = `${escapeHtml(okText)} (${left}s)`;
+          }
+        }, 1000);
+      } else {
+        armed = true;
+      }
+      okBtn.addEventListener("click", () => { if (!armed) return; m.close(); resolve(true); });
     });
   }
 
