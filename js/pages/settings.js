@@ -36,7 +36,7 @@ Pages.settings = {
               <button class="seg-btn" data-edit="false">Read-only</button>
               <button class="seg-btn" data-edit="true">Can edit</button>
             </div>
-            <button class="btn sm" id="inviteAdmin" style="margin-left:8px">+ Invite admin</button>
+            <button class="btn sm" id="inviteAdmin" style="margin-left:8px">${UI.icon("plus")} Invite admin</button>
           </div>
           <div id="adminList" class="card-body flush">${UI.loading()}</div>
         </div>` : `
@@ -59,7 +59,7 @@ Pages.settings = {
         const r = await API.callRpc("admin_list_admin_users", {
           p_filters: { can_edit: editFilter || null, page: 1, page_size: 200 },
         });
-        if (!r.ok) { listEl.innerHTML = UI.empty(r.error, "⚠️"); return; }
+        if (!r.ok) { listEl.innerHTML = UI.empty(r.error, "alert"); return; }
         const rows = r.data.rows || [];
         listEl.innerHTML = rows.map(a => {
           const accessBadge = a.can_edit
@@ -78,18 +78,18 @@ Pages.settings = {
               </div>
               <div class="table-actions">
                 ${a.can_edit
-                  ? `<button class="btn sm secondary" data-edit-off="${a.id}" data-name="${UI.escapeHtml(a.email)}">Make read-only</button>`
-                  : `<button class="btn sm success" data-edit-on="${a.id}" data-name="${UI.escapeHtml(a.email)}">Grant edit</button>`}
+                  ? `<button class="act" data-edit-off="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Make read-only">${UI.icon("shieldOff")}</button>`
+                  : `<button class="act success" data-edit-on="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Grant edit access">${UI.icon("shieldCheck")}</button>`}
                 ${a.is_active && !isSelf
-                  ? `<button class="btn sm ${a.role === "super_admin" ? "secondary" : "danger outline"}" data-toggle="${a.id}" data-name="${UI.escapeHtml(a.email)}">Disable</button>` : ""}
+                  ? `<button class="act ${a.role === "super_admin" ? "" : "danger"}" data-toggle="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Disable">${UI.icon("power")}</button>` : ""}
                 ${!a.is_active && !isSelf
-                  ? `<button class="btn sm outline" data-toggle="${a.id}" data-name="${UI.escapeHtml(a.email)}">Enable</button>` : ""}
+                  ? `<button class="act success" data-toggle="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Enable">${UI.icon("power")}</button>` : ""}
                 ${!isSelf
-                  ? `<button class="btn sm secondary" data-edit="${a.id}" data-name="${UI.escapeHtml(a.email)}">Edit</button>
-                     <button class="btn sm secondary" data-resetpw="${a.id}" data-name="${UI.escapeHtml(a.email)}">Reset password</button>` : ""}
+                  ? `<button class="act primary" data-edit="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Edit">${UI.icon("pencil")}</button>
+                     <button class="act" data-resetpw="${a.id}" data-name="${UI.escapeHtml(a.email)}" title="Reset password">${UI.icon("key")}</button>` : ""}
               </div>
             </div>`;
-        }).join("") || UI.empty("No admins match this filter.", "⚙️");
+        }).join("") || UI.empty("No admins match this filter.", "settings");
 
         listEl.querySelectorAll("[data-edit-on]").forEach(b => b.addEventListener("click", () => toggleEdit(b.dataset.editOn, b.dataset.name, true, loadAdmins)));
         listEl.querySelectorAll("[data-edit-off]").forEach(b => b.addEventListener("click", () => toggleEdit(b.dataset.editOff, b.dataset.name, false, loadAdmins)));

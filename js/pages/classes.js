@@ -57,12 +57,12 @@ Pages.classes = (() => {
           <td>${c.is_archived ? UI.badge("archived", "danger") : UI.badge("active", "success")}</td>
           <td>
             <div class="table-actions">
-              <a class="btn sm secondary" href="#/classes/${c.id}">View</a>
-              <button class="btn sm secondary" data-act="edit" data-id="${c.id}">Edit</button>
+              <a class="act primary" href="#/classes/${c.id}" title="View">${UI.icon("eye")}</a>
+              <button class="act primary" data-act="edit" data-id="${c.id}" title="Edit">${UI.icon("pencil")}</button>
               ${c.is_archived
-                ? `<button class="btn sm success" data-act="unarchive" data-id="${c.id}">Restore</button>`
-                : `<button class="btn sm ghost" data-act="archive" data-id="${c.id}">Archive</button>`}
-              <button class="btn sm danger outline" data-act="delete" data-id="${c.id}">Delete</button>
+                ? `<button class="act success" data-act="unarchive" data-id="${c.id}" title="Restore">${UI.icon("archiveRestore")}</button>`
+                : `<button class="act" data-act="archive" data-id="${c.id}" title="Archive">${UI.icon("archive")}</button>`}
+              <button class="act danger" data-act="delete" data-id="${c.id}" title="Delete">${UI.icon("trash")}</button>
             </div>
           </td>
         </tr>`;
@@ -82,7 +82,7 @@ Pages.classes = (() => {
     view.innerHTML = `
       <div class="section-title">
         <h1>Classes</h1>
-        <div class="actions">${Auth.canEdit() ? `<button class="btn" id="newClassBtn">+ New class</button>` : ""}</div>
+        <div class="actions">${Auth.canEdit() ? `<button class="btn" id="newClassBtn">${UI.icon("plus")} New class</button>` : ""}</div>
       </div>
       <div id="classesTable"></div>`;
     view.querySelector("#classesTable").appendChild(dt.element);
@@ -248,14 +248,14 @@ Pages.classes = (() => {
     const id = params.id;
     const r = await getClass(id);
     if (!r.ok || !r.data) {
-      view.innerHTML = `<div class="card card-body">${UI.empty(r.ok ? "Class not found." : r.error, "⚠️", "Not found")}</div>`;
+      view.innerHTML = `<div class="card card-body">${UI.empty(r.ok ? "Class not found." : r.error, "alert", "Not found")}</div>`;
       return;
     }
     const c = r.data;
     let activeTab = "students";
 
     view.innerHTML = `
-      <a href="#/classes" class="btn ghost sm" style="margin-bottom:12px">&larr; All classes</a>
+      <a href="#/classes" class="btn ghost sm" style="margin-bottom:12px">${UI.icon("arrowLeft")} All classes</a>
       <div class="detail-head">
         <div style="width:64px;height:64px;border-radius:14px;background:${UI.escapeHtml(c.theme_color || "#7c3aed")};display:grid;place-items:center;font-size:1.6rem;color:#fff;flex-shrink:0">
           ${c.cover_image_url ? `<img src="${UI.escapeHtml(c.cover_image_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:14px" onerror="this.style.display='none'" alt="">` : '<svg class="icn lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>'}
@@ -277,15 +277,15 @@ Pages.classes = (() => {
 
       <div class="card" style="margin-bottom:16px">
         <div class="card-body" style="display:flex;flex-wrap:wrap;gap:24px">
-          <div><div class="stat-label" style="font-size:.72rem;text-transform:uppercase;color:var(--text-3);font-weight:600">Professor</div>
+          <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Professor</div>
             <div style="margin-top:4px;display:flex;align-items:center;gap:8px">${UI.avatar(c.professor_name, null)}<b>${UI.escapeHtml(c.professor_name || "—")}</b></div></div>
-          <div><div class="stat-label" style="font-size:.72rem;text-transform:uppercase;color:var(--text-3);font-weight:600">Schedule</div>
+          <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Schedule</div>
             <div style="margin-top:4px"><b>${UI.escapeHtml(c.schedule_days || "—")}</b><br><span class="muted small">${c.schedule_start_time ? UI.fmtTime(c.schedule_start_time) + " – " + UI.fmtTime(c.schedule_end_time) : ""}</span></div></div>
-          <div><div class="stat-label" style="font-size:.72rem;text-transform:uppercase;color:var(--text-3);font-weight:600">Department</div>
+          <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Department</div>
             <div style="margin-top:4px"><b>${UI.escapeHtml(c.department || "—")}</b><br><span class="muted small">${UI.escapeHtml([c.section, c.track].filter(Boolean).join(" · ") || "")}</span></div></div>
-          <div><div class="stat-label" style="font-size:.72rem;text-transform:uppercase;color:var(--text-3);font-weight:600">Enrolled</div>
+          <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Enrolled</div>
             <div style="margin-top:4px"><b>${UI.escapeHtml(c.enrollment_count ?? 0)}</b> students</div></div>
-          <div><div class="stat-label" style="font-size:.72rem;text-transform:uppercase;color:var(--text-3);font-weight:600">Assignments</div>
+          <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Assignments</div>
             <div style="margin-top:4px"><b>${UI.escapeHtml(c.assignment_count ?? 0)}</b> posted</div></div>
         </div>
       </div>
@@ -317,18 +317,18 @@ Pages.classes = (() => {
       content.innerHTML = UI.loading();
       if (tab === "students") {
         const r2 = await API.callRpc("admin_list_users", { p_filters: { class_id: id, page: 1, page_size: 500 } });
-        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "⚠️"); return; }
+        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "alert"); return; }
         const rows = r2.data.rows || [];
         const html = `
           <div style="padding:14px 18px;display:flex;justify-content:flex-end">
-            <button class="btn sm" id="enrollBtn">+ Enroll student</button>
+            <button class="btn sm" id="enrollBtn">${UI.icon("plus")} Enroll student</button>
           </div>
           <div class="card-body flush">${rows.length ? `<table class="table"><thead><tr><th>Student</th><th>ID number</th><th>Year</th><th></th></tr></thead><tbody>
             ${rows.map(s => `<tr>
               <td>${UI.avatar(s.full_name, s.profile_picture_url)} <span class="cell-main">${UI.escapeHtml(s.full_name)}</span></td>
               <td class="mono">${UI.escapeHtml(s.id_number)}</td>
               <td>${UI.escapeHtml(s.year_level || "—")}</td>
-              <td><button class="btn sm danger outline" data-remove="${s.id}">Remove</button></td>
+              <td><button class="act danger" data-remove="${s.id}" title="Remove from class">${UI.icon("trash")}</button></td>
             </tr>`).join("")}</tbody></table>` : UI.empty("No students enrolled.", "users")}</div>`;
         content.innerHTML = html;
         content.querySelector("#enrollBtn").addEventListener("click", () => openEnroll(id, () => loadTab("students")));
@@ -344,7 +344,7 @@ Pages.classes = (() => {
         }));
       } else if (tab === "requests") {
         const r2 = await API.callRpc("admin_list_join_requests", { p_filters: { class_id: id, page: 1, page_size: 200 } });
-        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "⚠️"); return; }
+        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "alert"); return; }
         const rows = r2.data.rows || [];
         const pending = rows.filter(x => x.status === "pending");
         const decided = rows.filter(x => x.status !== "pending");
@@ -356,8 +356,8 @@ Pages.classes = (() => {
             <td class="mono">${UI.escapeHtml(q.student_id_number)}</td>
             <td class="muted small">${UI.timeAgo(q.requested_at)}</td>
             <td style="display:flex;gap:6px;justify-content:flex-end">
-              <button class="btn sm success" data-req="approve" data-id="${q.id}">Approve</button>
-              <button class="btn sm danger outline" data-req="reject" data-id="${q.id}">Reject</button>
+              <button class="act success" data-req="approve" data-id="${q.id}" title="Approve">${UI.icon("check")}</button>
+              <button class="act danger" data-req="reject" data-id="${q.id}" title="Reject">${UI.icon("x")}</button>
             </td>
           </tr>`).join("")}</tbody></table>` : UI.empty("No pending requests.", "inbox");
         html += `<div class="card-head" style="border-bottom:1px solid var(--border)"><h3>Decided (${decided.length})</h3></div>`;
@@ -386,7 +386,7 @@ Pages.classes = (() => {
         }));
       } else if (tab === "assignments") {
         const r2 = await API.callRpc("admin_list_assignments", { p_filters: { class_id: id, page: 1, page_size: 200 } });
-        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "⚠️"); return; }
+        if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "alert"); return; }
         const rows = r2.data.rows || [];
         content.innerHTML = `<div class="card-body flush">${rows.length ? `<table class="table"><thead><tr><th>Title</th><th>Type</th><th>Category</th><th>Due</th><th>Submissions</th><th></th></tr></thead><tbody>
           ${rows.map(a => `<tr>
@@ -395,7 +395,7 @@ Pages.classes = (() => {
             <td class="muted">${UI.escapeHtml(a.category || "—")}</td>
             <td class="small">${a.end_date ? UI.fmtDate(a.end_date) : "—"}</td>
             <td>${UI.escapeHtml(a.submission_count ?? 0)} <span class="muted">/ ${UI.escapeHtml(a.enrolled_student_count ?? 0)}</span><br>${a.ungraded_count ? UI.badge("ungraded: " + a.ungraded_count, "warning") : UI.badge("all graded", "success")}</td>
-            <td><button class="btn sm secondary" data-assign="${a.id}">Submissions</button></td>
+            <td><button class="act primary" data-assign="${a.id}" title="Submissions">${UI.icon("arrowUpRight")}</button></td>
           </tr>`).join("")}</tbody></table>` : UI.empty("No assignments posted.", "file")}</div>`;
         content.querySelectorAll("[data-assign]").forEach(b => b.addEventListener("click", () => {
           Router.go("/submissions?assignment=" + b.dataset.assign);
@@ -419,14 +419,14 @@ Pages.classes = (() => {
     async function search(q) {
       results.innerHTML = UI.loading("Searching\u2026");
       const res = await API.callRpc("admin_list_users", { p_filters: { role: "student", search: q || null, page: 1, page_size: 30 } });
-      if (!res.ok) { results.innerHTML = UI.empty(res.error, "⚠️"); return; }
+      if (!res.ok) { results.innerHTML = UI.empty(res.error, "alert"); return; }
       const rows = res.data.rows || [];
       if (!rows.length) { results.innerHTML = UI.empty("No students matched.", "search"); return; }
       results.innerHTML = rows.map(s => `
         <div style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer" data-pick="${s.id}">
           ${UI.avatar(s.full_name, s.profile_picture_url)}
           <div style="flex:1"><div style="font-weight:600;font-size:.86rem">${UI.escapeHtml(s.full_name)}</div><div class="small muted mono">${UI.escapeHtml(s.id_number)}</div></div>
-          <button class="btn sm">Enroll</button>
+          <button class="btn sm" style="pointer-events:none">${UI.icon("plus")} Enroll</button>
         </div>`).join("");
       results.querySelectorAll("[data-pick]").forEach(el => el.addEventListener("click", async () => {
         const res = await API.callRpc("admin_enroll_student", { p_class_id: classId, p_student_id: el.dataset.pick });
