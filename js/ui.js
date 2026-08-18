@@ -129,8 +129,9 @@ const UI = (() => {
   /* ---------- avatar ---------- */
   function avatar(name, url, size) {
     const cls = size === "lg" ? "avatar lg" : "avatar";
-    if (url) return `<span class="${cls}" style="background:none;border:1px solid var(--border)"><img src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.style.display='none'"/></span>`;
-    return `<span class="${cls}">${escapeHtml(initials(name))}</span>`;
+    const st = typeof size === "number" ? ` style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.4)}px"` : "";
+    if (url) return `<span class="${cls}" style="background:none;border:1px solid var(--border);${st ? st.slice(7) : ""}"><img src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.style.display='none'"/></span>`;
+    return `<span class="${cls}"${st}>${escapeHtml(initials(name))}</span>`;
   }
 
   /* ---------- badge ---------- */
