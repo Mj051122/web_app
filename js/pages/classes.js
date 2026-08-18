@@ -52,7 +52,7 @@ Pages.classes = (() => {
           </td>
           <td>${UI.escapeHtml(c.professor_name || "—")}</td>
           <td>${UI.badge(c.year_level)}</td>
-          <td class="muted small">${UI.escapeHtml(c.schedule_days || "—")}<br>${c.schedule_start_time ? UI.fmtTime(c.schedule_start_time) + "–" + UI.fmtTime(c.schedule_end_time) : ""}</td>
+          <td class="muted small">${UI.escapeHtml(UI.fmtDays(c.schedule_days) || "—")}<br>${c.schedule_start_time ? UI.fmtTime(c.schedule_start_time) + "–" + UI.fmtTime(c.schedule_end_time) : ""}</td>
           <td>${UI.escapeHtml(c.enrollment_count ?? 0)}</td>
           <td>${c.is_archived ? UI.badge("archived", "danger") : UI.badge("active", "success")}</td>
           <td>
@@ -188,7 +188,7 @@ Pages.classes = (() => {
         <div class="form-row">
           <div class="field"><label>Section</label><input type="text" name="section" value="${UI.escapeHtml(c.section || "")}" /></div>
           <div class="field"><label>Track</label><input type="text" name="track" value="${UI.escapeHtml(c.track || "")}" /></div>
-          <div class="field"><label>Schedule days</label><input type="text" name="schedule_days" value="${UI.escapeHtml(c.schedule_days || "")}" placeholder="e.g. Mon, Wed" /></div>
+          <div class="field"><label>Schedule days</label><input type="text" name="schedule_days" value="${UI.escapeHtml(UI.fmtDays(c.schedule_days))}" placeholder="e.g. Mon, Wed" /></div>
         </div>
         <div class="form-row">
           <div class="field"><label>Start time</label><input type="time" name="schedule_start_time" value="${c.schedule_start_time ? c.schedule_start_time.slice(0, 5) : ""}" /></div>
@@ -280,7 +280,7 @@ Pages.classes = (() => {
           <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Professor</div>
             <div style="margin-top:4px;display:flex;align-items:center;gap:8px">${UI.avatar(c.professor_name, null)}<b>${UI.escapeHtml(c.professor_name || "—")}</b></div></div>
           <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Schedule</div>
-            <div style="margin-top:4px"><b>${UI.escapeHtml(c.schedule_days || "—")}</b><br><span class="muted small">${c.schedule_start_time ? UI.fmtTime(c.schedule_start_time) + " – " + UI.fmtTime(c.schedule_end_time) : ""}</span></div></div>
+            <div style="margin-top:4px"><b>${UI.escapeHtml(UI.fmtDays(c.schedule_days) || "—")}</b><br><span class="muted small">${c.schedule_start_time ? UI.fmtTime(c.schedule_start_time) + " – " + UI.fmtTime(c.schedule_end_time) : ""}</span></div></div>
           <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Department</div>
             <div style="margin-top:4px"><b>${UI.escapeHtml(c.department || "—")}</b><br><span class="muted small">${UI.escapeHtml([c.section, c.track].filter(Boolean).join(" · ") || "")}</span></div></div>
           <div><div class="stat-label" style="font-size:.74rem;font-weight:650;color:var(--text-3)">Enrolled</div>
