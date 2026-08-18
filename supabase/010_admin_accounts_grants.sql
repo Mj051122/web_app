@@ -267,7 +267,9 @@ grant execute on function
   public.admin_update_class(uuid, jsonb),
   public.admin_delete_class(uuid, boolean),
   public.admin_enroll_student(uuid, uuid),
-  public.admin_remove_student(uuid, uuid),
+  -- NOTE: admin_remove_student was revoked AFTER 010 (migration
+  -- "revoke_admin_remove_student"): removing students from schedules
+  -- is professor-only. See that migration.
   public.admin_list_join_requests(jsonb),
   public.admin_decide_join_request(uuid, text),
   -- assignments & submissions

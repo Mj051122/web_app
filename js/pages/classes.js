@@ -129,7 +129,7 @@ Pages.classes = (() => {
         <div class="form-row">
           <div class="field"><label>Start time</label><input type="time" name="schedule_start_time" /></div>
           <div class="field"><label>End time</label><input type="time" name="schedule_end_time" /></div>
-          <div class="field"><label>Theme color</label><input type="text" name="theme_color" placeholder="#7c3aed" /></div>
+          <div class="field"><label>Theme color</label><input type="text" name="theme_color" placeholder="#4338ca" /></div>
         </div>
         <div class="field"><label>Cover image URL</label><input type="url" name="cover_image_url" /></div>
       </form>`;
@@ -193,7 +193,7 @@ Pages.classes = (() => {
         <div class="form-row">
           <div class="field"><label>Start time</label><input type="time" name="schedule_start_time" value="${c.schedule_start_time ? c.schedule_start_time.slice(0, 5) : ""}" /></div>
           <div class="field"><label>End time</label><input type="time" name="schedule_end_time" value="${c.schedule_end_time ? c.schedule_end_time.slice(0, 5) : ""}" /></div>
-          <div class="field"><label>Theme color</label><input type="text" name="theme_color" value="${UI.escapeHtml(c.theme_color || "")}" placeholder="#7c3aed" /></div>
+          <div class="field"><label>Theme color</label><input type="text" name="theme_color" value="${UI.escapeHtml(c.theme_color || "")}" placeholder="#4338ca" /></div>
         </div>
         <div class="field"><label>Cover image URL</label><input type="url" name="cover_image_url" value="${UI.escapeHtml(c.cover_image_url || "")}" /></div>
       </form>`;
@@ -257,7 +257,7 @@ Pages.classes = (() => {
     view.innerHTML = `
       <a href="#/classes" class="btn ghost sm" style="margin-bottom:12px">${UI.icon("arrowLeft")} All classes</a>
       <div class="detail-head">
-        <div style="width:64px;height:64px;border-radius:14px;background:${UI.escapeHtml(c.theme_color || "#7c3aed")};display:grid;place-items:center;font-size:1.6rem;color:#fff;flex-shrink:0">
+        <div style="width:64px;height:64px;border-radius:14px;background:${UI.escapeHtml(c.theme_color || "#4338ca")};display:grid;place-items:center;font-size:1.6rem;color:#fff;flex-shrink:0">
           ${c.cover_image_url ? `<img src="${UI.escapeHtml(c.cover_image_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:14px" onerror="this.style.display='none'" alt="">` : '<svg class="icn lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>'}
         </div>
         <div class="dt">
@@ -323,25 +323,14 @@ Pages.classes = (() => {
           <div style="padding:14px 18px;display:flex;justify-content:flex-end">
             <button class="btn sm" id="enrollBtn">${UI.icon("plus")} Enroll student</button>
           </div>
-          <div class="card-body flush">${rows.length ? `<table class="table"><thead><tr><th>Student</th><th>ID number</th><th>Year</th><th></th></tr></thead><tbody>
+          <div class="card-body flush">${rows.length ? `<table class="table"><thead><tr><th>Student</th><th>ID number</th><th>Year</th></tr></thead><tbody>
             ${rows.map(s => `<tr>
               <td>${UI.avatar(s.full_name, s.profile_picture_url)} <span class="cell-main">${UI.escapeHtml(s.full_name)}</span></td>
               <td class="mono">${UI.escapeHtml(s.id_number)}</td>
               <td>${UI.escapeHtml(s.year_level || "—")}</td>
-              <td><button class="act danger" data-remove="${s.id}" title="Remove from class">${UI.icon("trash")}</button></td>
             </tr>`).join("")}</tbody></table>` : UI.empty("No students enrolled.", "users")}</div>`;
         content.innerHTML = html;
         content.querySelector("#enrollBtn").addEventListener("click", () => openEnroll(id, () => loadTab("students")));
-        content.querySelectorAll("[data-remove]").forEach(b => b.addEventListener("click", () => {
-          UI.confirm({ title: "Remove student?", message: "The student is removed from this class only. Their submissions and attendance stay in the database.", okText: "Remove" })
-            .then(async ok => {
-              if (!ok) return;
-              const res = await API.callRpc("admin_remove_student", { p_class_id: id, p_student_id: b.dataset.remove });
-              if (!res.ok) { UI.toast(res.error, "error"); return; }
-              UI.toast("Student removed.", "success");
-              loadTab("students");
-            });
-        }));
       } else if (tab === "requests") {
         const r2 = await API.callRpc("admin_list_join_requests", { p_filters: { class_id: id, page: 1, page_size: 200 } });
         if (!r2.ok) { content.innerHTML = UI.empty(r2.error, "alert"); return; }

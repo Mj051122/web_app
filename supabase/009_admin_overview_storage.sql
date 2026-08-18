@@ -7,6 +7,8 @@
 
 -- ------------------------------------------------------------
 -- OVERVIEW (dashboard counters + recent activity)
+-- Admin-only scope: no professor-side content (classes,
+-- assignments, submissions, announcements live in the app).
 -- ------------------------------------------------------------
 create or replace function public.admin_get_overview(p_filters jsonb default '{}'::jsonb)
 returns jsonb
@@ -20,18 +22,20 @@ begin
   return jsonb_build_object(
     'students',              (select count(*) from public.app_users where role = 'student'),
     'professors',            (select count(*) from public.app_users where role = 'professor'),
-    'classes',               (select count(*) from public.classes),
+    'admin_users',           (select count(*) from public.admin_users),
     'pending_join_requests', (select count(*) from public.class_join_requests where status = 'pending'),
-    'ungraded_submissions',  (select count(*) from public.assignment_submissions where score is null),
     'blocked_users',         (select count(*) from public.app_users where is_blocked),
-    'announcements',         (select count(*) from public.class_announcements),
     'audit_entries',         (select count(*) from public.admin_audit_logs),
-    'recent_announcements',  coalesce((
+    'recent_join_requests',  coalesce((
       select jsonb_agg(t) from (
-        select a.id, title, coalesce(p.full_name, 'Panthraa Admin') as author_name, a.created_at
-        from public.class_announcements a
-        left join public.app_users p on p.id = a.professor_id
-        order by a.created_at desc limit 5
+        select r.id, r.status, r.requested_at,
+               s.full_name as student_name, s.id_number,
+               c.class_name, c.class_code
+        from public.class_join_requests r
+        join public.app_users s on s.id = r.student_id
+        join public.classes c on c.id = r.class_id
+        where r.status = 'pending'
+        order by r.requested_at desc limit 5
       ) t), '[]'::jsonb),
     'recent_audit',          coalesce((
       select jsonb_agg(t) from (

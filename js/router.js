@@ -1,9 +1,11 @@
 /* ============================================================
    router.js — hash-based routing, no libraries.
    Routes: #/ (landing), #/login, #/signup, #/dashboard,
-   #/users, #/users/:id, #/classes, #/classes/:id,
-   #/join-requests, #/assignments, #/submissions, #/attendance,
-   #/announcements, #/storage, #/audit-logs, #/settings
+   #/users, #/users/:id, #/faculties, #/faculties/:id,
+   #/students, #/students/:id, #/notifications,
+   #/classes, #/classes/:id, #/join-requests, #/assignments,
+   #/submissions, #/attendance, #/announcements, #/storage,
+   #/audit-logs, #/settings
    ============================================================ */
 const Router = (() => {
 
@@ -12,12 +14,9 @@ const Router = (() => {
     dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
     users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     classes: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>',
+    students: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+    notifications: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
     joinRequests: '<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
-    assignments: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
-    submissions: '<circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/>',
-    attendance: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>',
-    announcements: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
-    comments: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     storage: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
     auditLogs: '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
     settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
@@ -36,6 +35,11 @@ const Router = (() => {
     { pattern: "/dashboard", page: "dashboard", title: "Dashboard" },
     { pattern: "/users/:id", page: "userDetail", title: "User details" },
     { pattern: "/users", page: "users", title: "Users" },
+    { pattern: "/faculties/:id", page: "facultyDetail", title: "Faculty" },
+    { pattern: "/faculties", page: "faculties", title: "Faculties" },
+    { pattern: "/students/:id", page: "studentDetail", title: "Student" },
+    { pattern: "/students", page: "students", title: "Students" },
+    { pattern: "/notifications", page: "notifications", title: "Notifications" },
     { pattern: "/classes/:id", page: "classDetail", title: "Class details" },
     { pattern: "/classes", page: "classes", title: "Classes" },
     { pattern: "/join-requests", page: "joinRequests", title: "Join requests" },
@@ -93,13 +97,10 @@ const Router = (() => {
     { hash: "#/dashboard", label: "Dashboard", icon: "dashboard" },
     { section: "Management" },
     { hash: "#/users", label: "Users", icon: "users" },
-    { hash: "#/classes", label: "Classes", icon: "classes" },
+    { hash: "#/faculties", label: "Faculties", icon: "classes" },
+    { hash: "#/students", label: "Students", icon: "students" },
+    { hash: "#/notifications", label: "Notifications", icon: "notifications" },
     { hash: "#/join-requests", label: "Join requests", icon: "joinRequests" },
-    { hash: "#/assignments", label: "Assignments", icon: "assignments" },
-    { hash: "#/submissions", label: "Submissions & grades", icon: "submissions" },
-    { hash: "#/attendance", label: "Attendance", icon: "attendance" },
-    { hash: "#/announcements", label: "Announcements", icon: "announcements" },
-    { hash: "#/comments", label: "Comments", icon: "comments" },
     { section: "System" },
     { hash: "#/storage", label: "Storage", icon: "storage" },
     { hash: "#/audit-logs", label: "Audit logs", icon: "auditLogs" },
@@ -123,7 +124,7 @@ const Router = (() => {
       }
     }
     html += `</nav>
-      <div class="sidebar-footer">v1.0</div>`;
+      <div class="sidebar-footer"><span class="live-dot" title="Live"></span>All systems operational</div>`;
     sidebar.innerHTML = html;
     sidebar.classList.remove("open");
     document.getElementById("sidebarBackdrop").classList.remove("show");
@@ -144,7 +145,7 @@ const Router = (() => {
           <span class="name" style="display:block;font-size:.84rem;font-weight:600">${UI.escapeHtml(a.full_name || a.email)}</span>
           <span class="role">${roleBadge} ${editBadge}</span>
         </span>
-        <button class="icon-btn" id="logoutBtn" title="Sign out" aria-label="Sign out">${icon("logout", "icn")}</button>
+        <button class="icon-btn danger" id="logoutBtn" title="Sign out" aria-label="Sign out">${icon("logout", "icn")}</button>
       </div>`;
     document.getElementById("sidebarToggle").addEventListener("click", () => {
       document.getElementById("sidebar").classList.add("open");
