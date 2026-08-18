@@ -354,7 +354,7 @@ Pages.users = (() => {
           ${rows.map(c => `<tr>
             <td><a href="#/classes/${c.id}"><span class="cell-main">${UI.escapeHtml(c.class_name)}</span></a><br><span class="cell-sub">${UI.escapeHtml(c.subject_name || "")}</span></td>
             <td class="mono">${UI.escapeHtml(c.class_code)}</td>
-            <td class="muted small">${UI.escapeHtml(c.schedule_days || "—")} ${c.schedule_start_time ? "· " + UI.fmtTime(c.schedule_start_time) : ""}</td>
+            <td class="muted small">${UI.escapeHtml(UI.fmtDays(c.schedule_days) || "—")} ${c.schedule_start_time ? "· " + UI.fmtTime(c.schedule_start_time) : ""}</td>
             <td>${UI.badge(c.year_level)}</td>
             <td><a class="act primary" href="#/classes/${c.id}" title="Open class">${UI.icon("arrowUpRight")}</a></td>
           </tr>`).join("")}

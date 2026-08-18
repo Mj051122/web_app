@@ -22,15 +22,32 @@ window.Schedule = (() => {
     "#7c3aed", "#0f766e", "#b91c1c", "#1d4ed8", "#a16207",
   ];
 
+  /* the DB stores full lowercase names ("monday"), the grid uses
+     abbreviations ("Mon") — normalize so blocks land in a column */
+  const DAY_ALIAS = {
+    monday: "Mon", mon: "Mon",
+    tuesday: "Tue", tue: "Tue",
+    wednesday: "Wed", wed: "Wed",
+    thursday: "Thu", thu: "Thu",
+    friday: "Fri", fri: "Fri",
+    saturday: "Sat", sat: "Sat",
+    sunday: "Sun", sun: "Sun",
+  };
+
   function parseDays(c) {
     const raw = c.schedule_days;
     if (!raw) return [];
+    let list;
     if (typeof raw === "string" && raw.trim().startsWith("[")) {
-      try { return JSON.parse(raw); } catch (e) { /* fall through */ }
+      try { list = JSON.parse(raw); } catch (e) { /* fall through */ }
     }
-    return typeof raw === "string"
+    if (!list) list = typeof raw === "string"
       ? raw.split(",").map(d => d.trim()).filter(Boolean)
       : (Array.isArray(raw) ? raw : []);
+    return list.map(d => {
+      const k = String(d).trim().toLowerCase();
+      return DAY_ALIAS[k] || String(d).trim();
+    }).filter(Boolean);
   }
 
   function toMinutes(t) {

@@ -226,7 +226,7 @@ Pages.faculties = (() => {
             <br><span class="cell-sub">${UI.escapeHtml(c.subject_name || "—")}</span>
           </td>
           <td class="mono">${UI.escapeHtml(c.subject_code || c.class_code || "—")}</td>
-          <td class="muted small">${UI.escapeHtml(c.schedule_days || "—")}${c.schedule_start_time ? "<br>" + UI.fmtTime(c.schedule_start_time) : ""}</td>
+          <td class="muted small">${UI.escapeHtml(UI.fmtDays(c.schedule_days) || "—")}${c.schedule_start_time ? "<br>" + UI.fmtTime(c.schedule_start_time) : ""}</td>
           <td>${UI.badge(c.year_level)}</td>
           <td><span class="cell-main">${c.enrollment_count ?? 0}</span></td>
           <td>${c.is_archived ? UI.badge("archived", "danger") : UI.badge("active", "success")}</td>

@@ -35,6 +35,31 @@ const UI = (() => {
     return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
   }
 
+  const DAY_ALIAS = {
+    monday: "Mon", mon: "Mon",
+    tuesday: "Tue", tue: "Tue",
+    wednesday: "Wed", wed: "Wed",
+    thursday: "Thu", thu: "Thu",
+    friday: "Fri", fri: "Fri",
+    saturday: "Sat", sat: "Sat",
+    sunday: "Sun", sun: "Sun",
+  };
+
+  /* normalize schedule_days (text[]/jsonb array, JSON string, or
+     "Mon, Wed" string; full lowercase DB names) to "Mon, Thu" */
+  function fmtDays(days) {
+    if (!days) return "";
+    let list;
+    if (typeof days === "string" && days.trim().startsWith("[")) {
+      try { list = JSON.parse(days); } catch (e) { list = null; }
+    }
+    if (!list) list = typeof days === "string" ? days.split(",").map(d => d.trim()).filter(Boolean) : (Array.isArray(days) ? days : []);
+    return list.map(d => {
+      const k = String(d).trim().toLowerCase();
+      return DAY_ALIAS[k] || String(d).trim();
+    }).filter(Boolean).join(", ");
+  }
+
   function timeAgo(iso) {
     if (!iso) return "—";
     const d = new Date(iso); if (isNaN(d)) return "";
@@ -427,7 +452,7 @@ const UI = (() => {
   }
 
   return {
-    escapeHtml, fmtDate, fmtDateTime, fmtTime, timeAgo, cap, initials, debounce,
+    escapeHtml, fmtDate, fmtDateTime, fmtTime, fmtDays, timeAgo, cap, initials, debounce,
     toast, avatar, badge, modal, closeModals, confirm, loading, skeleton, empty,
     select, datatable, el, fmtBytes, icon, countUp,
   };
