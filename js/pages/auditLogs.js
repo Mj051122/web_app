@@ -34,7 +34,7 @@ Pages.auditLogs = {
           <td>${UI.escapeHtml(e.admin_name || e.admin_id || "—")}</td>
           <td>${UI.badge(e.action, "primary")}</td>
           <td><span class="mono" style="font-size:.78rem">${UI.escapeHtml(e.target_table || "")}</span> ${e.target_id ? `<span class="muted small mono">${UI.escapeHtml(e.target_id)}</span>` : ""}</td>
-          <td><button class="btn sm secondary" data-view="${e.id}">Details</button></td>
+          <td><button class="act primary" data-view="${e.id}" title="View details">${UI.icon("eye")}</button></td>
         </tr>`;
       },
     });
@@ -63,7 +63,7 @@ Pages.auditLogs = {
     view.innerHTML = `
       <div class="section-title">
         <h1>Audit logs</h1>
-        <div class="actions"><button class="btn secondary sm" id="alRefresh">Refresh</button></div>
+        <div class="actions"><button class="btn secondary sm" id="alRefresh">${UI.icon("refresh")} Refresh</button></div>
       </div>
       <div class="notice-strip">Read-only trail. Every privileged admin action writes a row here. Password values are never logged.</div>
       <div id="alTable"></div>`;

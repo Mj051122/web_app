@@ -45,7 +45,7 @@ function renderStep1(root, banner) {
     <div class="login-wrap">
       <div class="login-card">
         <div class="login-brand-panel">
-          <a href="#/" class="login-back">&larr; Back to home</a>
+          <a href="#/" class="login-back">${UI.icon("arrowLeft")} Back to home</a>
           <div class="login-brand">
             <span class="logo">${PAW}</span>
             <div>
@@ -54,9 +54,9 @@ function renderStep1(root, banner) {
             </div>
           </div>
           <ul class="login-perks">
-            <li>Monitor users, classes and requests</li>
-            <li>Grade, correct and announce</li>
-            <li>Every action audit-logged</li>
+            <li>${UI.icon("users")} Monitor users, classes and requests</li>
+            <li>${UI.icon("pencil")} Grade, correct and announce</li>
+            <li>${UI.icon("shieldCheck")} Every action audit-logged</li>
           </ul>
           <div class="login-quote">
             “The mobile app keeps working. You get the control center.”
@@ -165,7 +165,7 @@ function renderRecovery(root) {
     <div class="login-wrap">
       <div class="login-card">
         <div class="login-brand-panel">
-          <a href="#/" class="login-back">&larr; Back to home</a>
+          <a href="#/" class="login-back">${UI.icon("arrowLeft")} Back to home</a>
           <div class="login-brand">
             <span class="logo">${PAW}</span>
             <div>
@@ -174,9 +174,9 @@ function renderRecovery(root) {
             </div>
           </div>
           <ul class="login-perks">
-            <li>Monitor users, classes and requests</li>
-            <li>Grade, correct and announce</li>
-            <li>Every action audit-logged</li>
+            <li>${UI.icon("users")} Monitor users, classes and requests</li>
+            <li>${UI.icon("pencil")} Grade, correct and announce</li>
+            <li>${UI.icon("shieldCheck")} Every action audit-logged</li>
           </ul>
         </div>
 

@@ -10,7 +10,7 @@ Pages.landing = {
     const admin = res.status === "ok" ? res.admin : null;
 
     const primaryCta = admin
-      ? `<a class="btn lg" href="#/dashboard">Open dashboard &rarr;</a>`
+      ? `<a class="btn lg" href="#/dashboard">Open dashboard ${UI.icon("arrowRight")}</a>`
       : `<a class="btn lg" href="#/login">Sign in to the admin panel</a>`;
 
     const PAW = '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="6.2" cy="5.6" rx="2.1" ry="2.6"/><ellipse cx="12" cy="4.2" rx="2.1" ry="2.6"/><ellipse cx="17.8" cy="5.6" rx="2.1" ry="2.6"/><path d="M12 8.6c-4.1 0-6.6 2.5-6.6 5.5 0 2 1.4 3.3 3.1 3.3 1 0 1.9-.4 3.5-.4s2.5.4 3.5.4c1.7 0 3.1-1.3 3.1-3.3 0-3-2.5-5.5-6.6-5.5z"/></svg>';
@@ -23,7 +23,7 @@ Pages.landing = {
             ${admin
               ? `<span class="muted small" style="margin-right:8px">Signed in as ${UI.escapeHtml(admin.full_name || admin.email)}</span>
                  <a class="btn sm" href="#/dashboard">Dashboard</a>
-                 <button class="btn sm ghost" id="landingLogout">Log out</button>`
+                 <button class="btn sm ghost" id="landingLogout">${UI.icon("logout")} Log out</button>`
               : `<a class="btn sm ghost" href="#/signup">Request access</a>
                  <a class="btn sm" href="#/login">Sign in</a>`}
           </div>
@@ -39,7 +39,7 @@ Pages.landing = {
           </p>
           <div class="landing-cta">${primaryCta}</div>
           <div class="landing-trust">
-            <span>✓ No app downtime</span><span>✓ Every action audited</span><span>✓ Block, don't delete</span>
+            <span>${UI.icon("check")} No app downtime</span><span>${UI.icon("check")} Every action audited</span><span>${UI.icon("check")} Block, don't delete</span>
           </div>
         </section>
 
@@ -55,17 +55,8 @@ Pages.landing = {
           </div>
         </section>
 
-        <section class="landing-section landing-steps">
-          <h2>Getting started</h2>
-          <div class="steps">
-            <div class="step"><span class="step-num">1</span><h3>Run the SQL</h3><p>Execute <span class="mono">supabase/001</span>, <span class="mono">002</span>, <span class="mono">003</span> in the Supabase SQL Editor.</p></div>
-            <div class="step"><span class="step-num">2</span><h3>Create the first admin</h3><p>Insert your super admin into <span class="mono">admin_users</span> (documented in the SQL file).</p></div>
-            <div class="step"><span class="step-num">3</span><h3>Sign in</h3><p>Open the panel, sign in, and take control. The mobile app keeps working untouched.</p></div>
-          </div>
-        </section>
-
         <footer class="landing-footer">
-          ${CONFIG.APP_NAME} Admin &middot; static site + Supabase RPCs &middot; the Android app is never modified
+          © 2026 ${CONFIG.APP_NAME} Admin &middot; ${CONFIG.APP_TAGLINE}
         </footer>
       </div>`;
 

@@ -44,9 +44,9 @@ Pages.comments = {
             <div class="table-actions">
               ${Auth.canEdit() ? `
               ${c.is_hidden
-                ? `<button class="btn sm success" data-act="show" data-id="${c.id}">Show</button>`
-                : `<button class="btn sm ghost" data-act="hide" data-id="${c.id}">Hide</button>`}
-              <button class="btn sm danger outline" data-act="delete" data-id="${c.id}">Delete</button>` : ""}
+                ? `<button class="act success" data-act="show" data-id="${c.id}" title="Show">${UI.icon("eye")}</button>`
+                : `<button class="act" data-act="hide" data-id="${c.id}" title="Hide">${UI.icon("eyeOff")}</button>`}
+              <button class="act danger" data-act="delete" data-id="${c.id}" title="Delete">${UI.icon("trash")}</button>` : ""}
             </div>
           </td>
         </tr>`;

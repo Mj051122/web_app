@@ -7,7 +7,7 @@ Pages.dashboard = {
     view.innerHTML = UI.loading("Loading overview\u2026");
     const res = await API.callRpc("admin_get_overview", { p_filters: {} });
     if (!res.ok) {
-      view.innerHTML = `<div class="card card-body">${UI.empty("Could not load the dashboard.", "⚠️", "Load failed")}</div>`;
+      view.innerHTML = `<div class="card card-body">${UI.empty("Could not load the dashboard.", "alert", "Load failed")}</div>`;
       return;
     }
     const o = res.data || {};
@@ -55,7 +55,6 @@ Pages.dashboard = {
         ${card("Announcements", o.announcements ?? "—", "total posted", "#/announcements", "announcements")}
         ${card("Audit entries", o.audit_entries ?? "—", "admin actions tracked", "#/audit-logs", "audit")}
       </div>
-
       <div class="grid cols-2" style="margin-top:18px">
         <div class="card">
           <div class="card-head"><h3>Recent announcements</h3><a href="#/announcements" class="btn ghost sm" style="margin-left:auto">View all</a></div>
@@ -66,6 +65,8 @@ Pages.dashboard = {
           <div class="card-body flush" id="recentAudit"></div>
         </div>
       </div>`;
+
+    view.querySelectorAll("#statGrid .stat-value").forEach(v => UI.countUp(v));
 
     const recentAnn = view.querySelector("#recentAnn");
     const recentAudit = view.querySelector("#recentAudit");

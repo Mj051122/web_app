@@ -15,10 +15,10 @@ Pages.attendance = {
     view.innerHTML = `
       <div class="section-title">
         <h1>Attendance</h1>
-        <div class="actions"><button class="btn" id="addAttBtn">+ Record attendance</button></div>
+        <div class="actions"><button class="btn" id="addAttBtn">${UI.icon("plus")} Record attendance</button></div>
       </div>
       <div class="notice-strip hidden" id="dupBanner">
-        ⚠️ Duplicate scans detected — the same student has multiple present records for the same date/assignment.
+        ${UI.icon("alert")} Duplicate scans detected — the same student has multiple present records for the same date/assignment.
         Review below and clean up with the "Fix" action.
       </div>
       <div id="attTable"></div>`;
@@ -76,7 +76,7 @@ Pages.attendance = {
           <td>${UI.fmtDate(a.attendance_date)}</td>
           <td>${a.is_duplicate ? UI.badge("present ×" + a.dup_count, "warning") : UI.badge(a.status || "present", "success")}</td>
           <td class="muted small">${UI.timeAgo(a.created_at)}</td>
-          <td><button class="btn sm danger outline" data-fix="${a.id}" data-name="${UI.escapeHtml(a.student_name)}">Fix</button></td>
+          <td><button class="act danger" data-fix="${a.id}" data-name="${UI.escapeHtml(a.student_name)}" title="Fix record">${UI.icon("wrench")}</button></td>
         </tr>`;
       },
     });
@@ -160,12 +160,12 @@ function openAdd(after) {
       <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-top:6px;cursor:pointer" data-pick="${s.id}" data-name="${UI.escapeHtml(s.full_name)}">
         ${UI.avatar(s.full_name, s.profile_picture_url)}
         <div style="flex:1"><div style="font-weight:600;font-size:.85rem">${UI.escapeHtml(s.full_name)}</div><div class="small muted mono">${UI.escapeHtml(s.id_number)}</div></div>
-        <button class="btn sm">Pick</button>
+        <button class="btn sm" style="pointer-events:none">${UI.icon("check")} Pick</button>
       </div>`).join("");
     studentResults.querySelectorAll("[data-pick]").forEach(el => el.addEventListener("click", () => {
       pickedStudent = el.dataset.pick;
       studentSearch.value = el.dataset.name;
-      studentResults.innerHTML = `<div class="small success" style="padding:4px 0;color:var(--success)">✓ ${UI.escapeHtml(el.dataset.name)} selected</div>`;
+      studentResults.innerHTML = `<div class="small" style="padding:4px 0;color:var(--success);display:flex;align-items:center;gap:5px">${UI.icon("check")} ${UI.escapeHtml(el.dataset.name)} selected</div>`;
     }));
   }, 350);
   studentSearch.addEventListener("input", () => searchStudents(studentSearch.value.trim()));

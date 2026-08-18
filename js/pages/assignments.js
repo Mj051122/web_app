@@ -51,9 +51,9 @@ Pages.assignments = {
           <td>${health.join(" ")}</td>
           <td>
             <div class="table-actions">
-              <a class="btn sm secondary" href="#/submissions?assignment=${a.id}">Submissions</a>
-              <button class="btn sm ghost" data-act="edit" data-id="${a.id}">Edit</button>
-              <button class="btn sm danger outline" data-act="delete" data-id="${a.id}">Delete</button>
+              <a class="act primary" href="#/submissions?assignment=${a.id}" title="Submissions">${UI.icon("arrowUpRight")}</a>
+              <button class="act primary" data-act="edit" data-id="${a.id}" title="Edit">${UI.icon("pencil")}</button>
+              <button class="act danger" data-act="delete" data-id="${a.id}" title="Delete">${UI.icon("trash")}</button>
             </div>
           </td>
         </tr>`;
@@ -71,7 +71,7 @@ Pages.assignments = {
       <div class="section-title">
         <h1>Assignments</h1>
         <div class="actions">
-          ${Auth.canEdit() ? `<button class="btn" id="newAsgBtn">+ New assignment</button>` : ""}
+          ${Auth.canEdit() ? `<button class="btn" id="newAsgBtn">${UI.icon("plus")} New assignment</button>` : ""}
           <a class="btn secondary sm" href="#/submissions">Ungraded queue</a>
         </div>
       </div>

@@ -123,7 +123,7 @@ const Router = (() => {
       }
     }
     html += `</nav>
-      <div class="sidebar-footer">${CONFIG.APP_NAME} Admin &middot; v1.0</div>`;
+      <div class="sidebar-footer">v1.0</div>`;
     sidebar.innerHTML = html;
     sidebar.classList.remove("open");
     document.getElementById("sidebarBackdrop").classList.remove("show");
@@ -144,7 +144,7 @@ const Router = (() => {
           <span class="name" style="display:block;font-size:.84rem;font-weight:600">${UI.escapeHtml(a.full_name || a.email)}</span>
           <span class="role">${roleBadge} ${editBadge}</span>
         </span>
-        <button class="btn ghost sm" id="logoutBtn" title="Sign out">Log out</button>
+        <button class="icon-btn" id="logoutBtn" title="Sign out" aria-label="Sign out">${icon("logout", "icn")}</button>
       </div>`;
     document.getElementById("sidebarToggle").addEventListener("click", () => {
       document.getElementById("sidebar").classList.add("open");
@@ -185,14 +185,17 @@ const Router = (() => {
       renderTopbar(route.title);
       document.title = route.title + " — " + CONFIG.APP_NAME + " Admin";
       const view = document.getElementById("view");
+      view.classList.remove("page-enter");
       view.innerHTML = `<div class="view-pad">${UI.loading()}</div>`;
       try {
         const page = Pages[route.page];
         if (!page) { view.innerHTML = UI.empty("Unknown page.", "search", "404"); return; }
         await page.render(view, params);
+        void view.offsetWidth;
+        view.classList.add("page-enter");
       } catch (e) {
         console.error(e);
-        view.innerHTML = `<div class="card card-body">${UI.empty("Something went wrong rendering this page. See console.", "⚠️", "Error")}</div>`;
+        view.innerHTML = `<div class="card card-body">${UI.empty("Something went wrong rendering this page. See console.", "alert", "Error")}</div>`;
       }
     } else {
       app.classList.add("hidden");

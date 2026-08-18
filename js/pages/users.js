@@ -71,13 +71,13 @@ Pages.users = (() => {
           <td class="muted small">${UI.fmtDate(u.created_at)}</td>
           <td>
             <div class="table-actions">
-              <a class="btn sm secondary" href="#/users/${u.id}">View</a>
-              <button class="btn sm secondary" data-act="edit" data-id="${u.id}">Edit</button>
+              <a class="act primary" href="#/users/${u.id}" title="View">${UI.icon("eye")}</a>
+              <button class="act primary" data-act="edit" data-id="${u.id}" title="Edit">${UI.icon("pencil")}</button>
               ${blocked
-                ? `<button class="btn sm success" data-act="unblock" data-id="${u.id}">Unblock</button>`
-                : `<button class="btn sm danger outline" data-act="block" data-id="${u.id}">Block</button>`}
-              <button class="btn sm ghost" data-act="reset" data-id="${u.id}" title="Reset password"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><path d="m21 2-2 2"/><path d="m15.5 7.5 3 3L22 7l-3-3"/><path d="m12.39 12.61-4.77 4.77a5.5 5.5 0 1 1-7.78-7.78l4.78-4.77A5.5 5.5 0 0 1 12.39 12.6z"/></svg></button>
-              ${Auth.canEdit() ? `<button class="btn sm danger outline" data-act="delete" data-id="${u.id}">Delete</button>` : ""}
+                ? `<button class="act success" data-act="unblock" data-id="${u.id}" title="Unblock">${UI.icon("shieldCheck")}</button>`
+                : `<button class="act danger" data-act="block" data-id="${u.id}" title="Block">${UI.icon("shieldOff")}</button>`}
+              <button class="act" data-act="reset" data-id="${u.id}" title="Reset password">${UI.icon("key")}</button>
+              ${Auth.canEdit() ? `<button class="act danger" data-act="delete" data-id="${u.id}" title="Delete">${UI.icon("trash")}</button>` : ""}
             </div>
           </td>
         </tr>`;
@@ -100,7 +100,7 @@ Pages.users = (() => {
     view.innerHTML = `
       <div class="section-title">
         <h1>Users</h1>
-        <div class="actions"><button class="btn" id="createUserBtn">+ New user</button></div>
+        <div class="actions"><button class="btn" id="createUserBtn">${UI.icon("plus")} New user</button></div>
       </div>
       <div id="usersTable"></div>`;
 
@@ -273,7 +273,7 @@ Pages.users = (() => {
     const id = params.id;
     const res = await getUser(id);
     if (!res.ok) {
-      view.innerHTML = `<div class="card card-body">${UI.empty("Could not load this user.", "⚠️", "Not found")}</div>`;
+      view.innerHTML = `<div class="card card-body">${UI.empty("Could not load this user.", "alert", "Not found")}</div>`;
       return;
     }
     const u = res.data;
@@ -286,7 +286,7 @@ Pages.users = (() => {
     let activeTab = "classes";
 
     view.innerHTML = `
-      <a href="#/users" class="btn ghost sm" style="margin-bottom:12px">&larr; All users</a>
+      <a href="#/users" class="btn ghost sm" style="margin-bottom:12px">${UI.icon("arrowLeft")} All users</a>
       <div class="detail-head">
         ${UI.avatar(u.full_name, u.profile_picture_url, "lg")}
         <div class="dt">
@@ -298,7 +298,7 @@ Pages.users = (() => {
           ${u.is_blocked
             ? `<button class="btn success" id="detBlock">Unblock</button>`
             : `<button class="btn danger outline" id="detBlock">Block</button>`}
-          <button class="btn ghost" id="detReset" title="Reset password"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><path d="m21 2-2 2"/><path d="m15.5 7.5 3 3L22 7l-3-3"/><path d="m12.39 12.61-4.77 4.77a5.5 5.5 0 1 1-7.78-7.78l4.78-4.77A5.5 5.5 0 0 1 12.39 12.6z"/></svg></button>
+          <button class="btn ghost" id="detReset" title="Reset password">${UI.icon("key")}</button>
           ${Auth.canEdit() ? `<button class="btn danger outline" id="detDelete">Delete</button>` : ""}
         </div>
       </div>
@@ -347,7 +347,7 @@ Pages.users = (() => {
       content.innerHTML = UI.loading();
       if (tab === "classes") {
         const r = await API.callRpc("admin_list_classes", { p_filters: { student_id: id, page: 1, page_size: 100 } });
-        if (!r.ok) { content.innerHTML = UI.empty(r.error, "⚠️"); return; }
+        if (!r.ok) { content.innerHTML = UI.empty(r.error, "alert"); return; }
         const rows = r.data.rows || [];
         if (!rows.length) { content.innerHTML = UI.empty("Not enrolled in any classes.", "classes"); return; }
         content.innerHTML = `<div class="card-body flush"><table class="table"><thead><tr><th>Class</th><th>Code</th><th>Schedule</th><th>Year</th><th></th></tr></thead><tbody>
@@ -356,12 +356,12 @@ Pages.users = (() => {
             <td class="mono">${UI.escapeHtml(c.class_code)}</td>
             <td class="muted small">${UI.escapeHtml(c.schedule_days || "—")} ${c.schedule_start_time ? "· " + UI.fmtTime(c.schedule_start_time) : ""}</td>
             <td>${UI.badge(c.year_level)}</td>
-            <td><a class="btn sm secondary" href="#/classes/${c.id}">Open</a></td>
+            <td><a class="act primary" href="#/classes/${c.id}" title="Open class">${UI.icon("arrowUpRight")}</a></td>
           </tr>`).join("")}
         </tbody></table></div>`;
       } else if (tab === "submissions") {
         const r = await API.callRpc("admin_list_submissions", { p_filters: { student_id: id, page: 1, page_size: 100 } });
-        if (!r.ok) { content.innerHTML = UI.empty(r.error, "⚠️"); return; }
+        if (!r.ok) { content.innerHTML = UI.empty(r.error, "alert"); return; }
         const rows = r.data.rows || [];
         if (!rows.length) { content.innerHTML = UI.empty("No submissions yet.", "award"); return; }
         content.innerHTML = `<div class="card-body flush"><table class="table"><thead><tr><th>Assignment</th><th>Class</th><th>Submitted</th><th>Score</th><th></th></tr></thead><tbody>
@@ -370,7 +370,7 @@ Pages.users = (() => {
             <td class="muted">${UI.escapeHtml(s.class_name)}</td>
             <td class="small">${UI.fmtDateTime(s.submitted_at)}</td>
             <td>${s.score == null ? UI.badge("ungraded", "warning") : `<span class="cell-main">${UI.escapeHtml(s.score)}<span class="muted">/${UI.escapeHtml(s.target_points ?? "")}</span></span>`}</td>
-            <td><button class="btn sm secondary" data-sub="${s.id}">Grade</button></td>
+            <td><button class="act primary" data-sub="${s.id}" title="Grade">${UI.icon("pencil")}</button></td>
           </tr>`).join("")}
         </tbody></table></div>`;
         content.querySelectorAll("[data-sub]").forEach(b => b.addEventListener("click", () => {
@@ -379,7 +379,7 @@ Pages.users = (() => {
         }));
       } else if (tab === "attendance") {
         const r = await API.callRpc("admin_list_attendance", { p_filters: { student_id: id, page: 1, page_size: 100 } });
-        if (!r.ok) { content.innerHTML = UI.empty(r.error, "⚠️"); return; }
+        if (!r.ok) { content.innerHTML = UI.empty(r.error, "alert"); return; }
         const rows = r.data.rows || [];
         if (!rows.length) { content.innerHTML = UI.empty("No attendance records. Absences are inferred by missing rows.", "list"); return; }
         content.innerHTML = `<div class="card-body flush"><table class="table"><thead><tr><th>Class</th><th>Assignment</th><th>Date</th><th>Status</th></tr></thead><tbody>

@@ -39,12 +39,12 @@ Pages.announcements = {
           </td>
           <td>${a.author_is_admin ? UI.badge("Admin", "dark") : UI.escapeHtml(a.author_name || "Professor")}</td>
           <td>${targets}</td>
-          <td>${UI.escapeHtml(a.read_count ?? 0)} <span class="muted small">/ read</span></td>
+          <td>${UI.escapeHtml(a.read_count ?? 0)} <span class="muted small">reads</span></td>
           <td class="muted small">${UI.fmtDateTime(a.created_at)}</td>
           <td>
             <div class="table-actions">
-              <button class="btn sm secondary" data-act="edit" data-id="${a.id}">Edit</button>
-              <button class="btn sm danger outline" data-act="delete" data-id="${a.id}">Delete</button>
+              <button class="act primary" data-act="edit" data-id="${a.id}" title="Edit">${UI.icon("pencil")}</button>
+              <button class="act danger" data-act="delete" data-id="${a.id}" title="Delete">${UI.icon("trash")}</button>
             </div>
           </td>
         </tr>`;
@@ -61,7 +61,7 @@ Pages.announcements = {
     view.innerHTML = `
       <div class="section-title">
         <h1>Announcements</h1>
-        <div class="actions"><button class="btn" id="newAnnBtn">+ New announcement</button></div>
+        <div class="actions"><button class="btn" id="newAnnBtn">${UI.icon("plus")} New announcement</button></div>
       </div>
       <div id="annTable"></div>`;
     view.querySelector("#annTable").appendChild(dt.element);

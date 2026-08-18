@@ -21,7 +21,7 @@ Pages.signup = {
       <div class="login-wrap">
         <div class="login-card">
           <div class="login-brand-panel">
-            <a href="#/" class="login-back">&larr; Back to home</a>
+            <a href="#/" class="login-back">${UI.icon("arrowLeft")} Back to home</a>
             <div class="login-brand">
               <span class="logo">${PAW}</span>
               <div>
@@ -30,9 +30,9 @@ Pages.signup = {
               </div>
             </div>
             <ul class="login-perks">
-              <li>You'll sign in with email + password</li>
-              <li>You start read-only — a super admin can grant edit access</li>
-              <li>Every action you take is audit-logged</li>
+              <li>${UI.icon("key")} You'll sign in with email + password</li>
+              <li>${UI.icon("shield")} You start read-only — a super admin can grant edit access</li>
+              <li>${UI.icon("scroll")} Every action you take is audit-logged</li>
             </ul>
             <div class="login-quote">
               “Request access now, get editing rights later.”
@@ -177,7 +177,7 @@ function renderCodeStep(root, email) {
       <div class="info-box" style="color:#1e40af;border-color:#bfdbfe">
         <b>You can sign in now.</b> Your account starts in <b>read-only mode</b>:
         you can view everything, but editing is locked until a super admin
-        grants you edit access (Settings &rarr; Admin accounts).
+        grants you edit access (Settings ${UI.icon("arrowRight")} Admin accounts).
       </div>
       <a class="btn lg" href="#/login" style="width:100%;justify-content:center">Back to sign in</a>
       <div class="login-foot"><a href="#/">Back to home</a></div>`;

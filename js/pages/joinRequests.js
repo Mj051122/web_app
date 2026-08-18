@@ -37,8 +37,8 @@ Pages.joinRequests = {
           <td>${UI.badge(q.status)}</td>
           <td>${q.status === "pending" ? `
             <div class="table-actions">
-              <button class="btn sm success" data-req="approve" data-id="${q.id}">Approve</button>
-              <button class="btn sm danger outline" data-req="reject" data-id="${q.id}">Reject</button>
+              <button class="act success" data-req="approve" data-id="${q.id}" title="Approve">${UI.icon("check")}</button>
+              <button class="act danger" data-req="reject" data-id="${q.id}" title="Reject">${UI.icon("x")}</button>
             </div>` : `<span class="muted small">${q.decided_at ? UI.timeAgo(q.decided_at) : ""}</span>`}
           </td>
         </tr>`;
@@ -68,7 +68,7 @@ Pages.joinRequests = {
     view.innerHTML = `
       <div class="section-title">
         <h1>Join requests</h1>
-        <div class="actions"><button class="btn secondary sm" id="jrRefresh">Refresh</button></div>
+        <div class="actions"><button class="btn secondary sm" id="jrRefresh">${UI.icon("refresh")} Refresh</button></div>
       </div>
       <div id="jrTable"></div>`;
     view.querySelector("#jrTable").appendChild(dt.element);

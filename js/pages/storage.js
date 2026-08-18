@@ -11,9 +11,9 @@ Pages.storage = {
     view.innerHTML = `
       <div class="section-title">
         <h1>Storage</h1>
-        <div class="actions"><button class="btn secondary sm" id="stRefresh">Refresh</button></div>
+        <div class="actions"><button class="btn secondary sm" id="stRefresh">${UI.icon("refresh")} Refresh</button></div>
       </div>
-      <div class="notice-strip">Orphan detection is best-effort: it compares file names against the URL columns the app writes.
+      <div class="notice-strip">${UI.icon("alert")} Orphan detection is best-effort: it compares file names against the URL columns the app writes.
         Renamed or differently-referenced files may show up here even though they are in use.</div>
       <div class="card">
         <div class="card-head">
@@ -57,8 +57,8 @@ Pages.storage = {
           <td>${orphan ? UI.badge("orphan", "danger") : UI.badge("referenced", "success")}</td>
           <td>
             <div class="table-actions">
-              <button class="btn sm ghost" data-dl="${UI.escapeHtml(f.name)}">⬇</button>
-              ${orphan ? `<button class="btn sm danger outline" data-del="${UI.escapeHtml(f.name)}">Delete</button>` : ""}
+              <button class="act primary" data-dl="${UI.escapeHtml(f.name)}" title="Download">${UI.icon("download")}</button>
+              ${orphan ? `<button class="act danger" data-del="${UI.escapeHtml(f.name)}" title="Delete">${UI.icon("trash")}</button>` : ""}
             </div>
           </td>
         </tr>`;

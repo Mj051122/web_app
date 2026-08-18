@@ -28,7 +28,7 @@ Pages.submissions = (() => {
               <td>${UI.escapeHtml(u.graded_count)}</td>
               <td>${u.ungraded_count ? UI.badge(u.ungraded_count, "warning") : UI.badge("0", "success")}</td>
               <td>${u.missing_count ? UI.badge(u.missing_count, "danger") : UI.badge("none", "success")}</td>
-              <td><a class="btn sm secondary" href="#/submissions?assignment=${u.assignment_id}">Open</a></td>
+              <td><a class="act primary" href="#/submissions?assignment=${u.assignment_id}" title="Open">${UI.icon("arrowUpRight")}</a></td>
             </tr>`).join("")}</tbody></table>` : UI.empty("All submissions are graded. Nice work!", "award", "All caught up")}
         </div>
       </div>
@@ -66,8 +66,8 @@ Pages.submissions = (() => {
           </td>
           <td class="small">${UI.fmtDateTime(s.submitted_at)}</td>
           <td>${s.score == null ? UI.badge("ungraded", "warning") : `<span class="cell-main">${UI.escapeHtml(s.score)}<span class="muted">/${UI.escapeHtml(s.target_points ?? "")}</span></span>`}</td>
-          <td>${s.submission_file_url ? `<button class="btn sm ghost" data-dl="${UI.escapeHtml(s.id)}">⬇ Download</button>` : "—"}</td>
-          <td><button class="btn sm secondary" data-grade="${s.id}">${s.score == null ? "Grade" : "Override"}</button></td>
+          <td>${s.submission_file_url ? `<button class="act primary" data-dl="${UI.escapeHtml(s.id)}" title="Download file">${UI.icon("download")}</button>` : "—"}</td>
+          <td><button class="act primary" data-grade="${s.id}" title="${s.score == null ? "Grade" : "Override score"}">${UI.icon("pencil")}</button></td>
         </tr>`;
       },
     });
@@ -118,7 +118,7 @@ Pages.submissions = (() => {
         </div>` : ""}
       ${sub.submission_file_url ? `
         <div class="field"><label>Submitted file</label>
-          <div><button class="btn sm secondary" id="dlFile">⬇ Download file</button></div>
+          <div><button class="btn sm secondary" id="dlFile">${UI.icon("download")} Download file</button></div>
         </div>` : ""}
       <div class="form-row">
         <div class="field"><label>Score (0 – ${UI.escapeHtml(sub.target_points ?? "∞")})</label>
